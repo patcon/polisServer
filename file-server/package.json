@@ -1,7 +1,13 @@
 {
-  "name": "polisfileserver",
+  "name": "polis-file-server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pol-is/polis.git",
+    "directory": "file-server"
+  },
+  "private": true,
   "version": "1.0.0",
-  "description": "",
+  "description": "Polis: static file server for built clients",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",

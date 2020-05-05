@@ -1,7 +1,13 @@
 {
-  "name": "polis-report",
+  "name": "polis-client-report",
   "version": "0.0.1",
-  "description": "pol.is report",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pol-is/polis.git",
+    "directory": "client-report"
+  },
+  "private": true,
+  "description": "Polis: Detailed analytics report",
   "scripts": {
     "clean": "rimraf dist",
     "build:webpack": "NODE_ENV=production webpack --config webpack.config.js",

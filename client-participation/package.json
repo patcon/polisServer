@@ -1,5 +1,12 @@
 {
-  "name": "dashboard-require",
+  "name": "polis-client-participation",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pol-is/polis.git",
+    "directory": "client-participation"
+  },
+  "private": true,
+  "description": "Polis: the participation view (viz and voting)",
   "appName": "DashboardRequire",
   "version": "0.0.0",
   "scripts": {

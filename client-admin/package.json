@@ -1,8 +1,13 @@
 {
   "name": "polis-client-admin",
   "version": "0.0.1",
-  "repository": "github:pol-is/polisClientAdmin",
-  "description": "Polis Admin Console",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pol-is/polis.git",
+    "directory": "client-admin"
+  },
+  "private": true,
+  "description": "Polis: administrator view",
   "engines": {
     "node": "8.17.0"
   },
