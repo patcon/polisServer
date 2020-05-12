@@ -21,6 +21,10 @@ services:
       WEBSERVER_USERNAME: ws-user
       WEBSERVER_PASS: ws-pass
       MATH_ENV: dev
+      # Comma-separated list of Facebook permissions to be requested for login.
+      # Options: email, user_friends or empty string (uses default, public_profile)
+      # See: https://developers.facebook.com/docs/facebook-login/permissions
+      FACEBOOK_PERMISSIONS: email,user_friends
     depends_on:
       - 'postgres'
       - 'file-server'
