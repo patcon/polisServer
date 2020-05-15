@@ -25,6 +25,8 @@ services:
       # Options: email, user_friends or empty string (uses default, public_profile)
       # See: https://developers.facebook.com/docs/facebook-login/permissions
       EXTRA_FACEBOOK_PERMS: email,user_friends
+      TWITTER_CONSUMER_KEY: ${TWITTER_CONSUMER_KEY}
+      TWITTER_CONSUMER_SECRET: ${TWITTER_CONSUMER_SECRET}
     depends_on:
       - 'postgres'
       - 'file-server'

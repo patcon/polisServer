@@ -84,7 +84,7 @@ It is NOT suited for production, but it may be in the future.
 - [@crkrenn](https://github.com/crkrenn) & [@david-nadaraia](https://github.com/david-nadaraia)
 - [@patcon](https://github.com/patcon)
 
-## Creating a Facebook App
+## Configuring Facebook Login
 
 A Facebook app is required for sign-in via Facebook Login.
 
@@ -108,6 +108,21 @@ A Facebook app is required for sign-in via Facebook Login.
     - `email` - required?
     - `user_friends` - optional. allows account-holders to see their friends in visualizations if those friends have also connected Facebook to Polis.
 8. Rebuild your docker environment.
+
+### Configuring Twitter Login
+
+For guidance, we'll lean on Auth0 documentation. (We don't use Auth0's platform, but they have great docs.)
+
+1. [Create a Twitter Application.][twitter-howto]
+    - Ensure that _Terms of service URL_ and _Privacy policy URL_ has some value.
+2. Under the `Permissions` tab, click `Edit`:
+    - set _Access permission_ to "Read-only", and
+    - check "Request email address from users".
+3. Get your Consumer Key and Consumer Secret. (step 2 in above link)
+4. Configure `TWITTER_CONSUMER_KEY` and `TWITTER_CONSUMER_SECRET` within `.env`.
+5. Rebuild your docker environment.
+
+   [twitter-howto]: https://auth0.com/docs/connections/social/twitter#1-create-a-twitter-application
 
 ## Contribution notes
 
