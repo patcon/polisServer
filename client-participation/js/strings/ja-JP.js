@@ -24,6 +24,7 @@ module.exports = {
   "TOS": "TOS",
   "writePrompt": "あなたの考え方を共有しよう……",
   "anonPerson": "匿名",
+  "helpWhatAmISeeingTitle": "What am I seeing?",
   "helpWhatAmISeeing": "投票傾向が似ている人々がグループ化されます。グループをクリックすると、どの視点を共有しているのかを確認できます。",
   "writeCommentHelpText": "上記の質問に、あなたの意見やアイデアが含まれていない場合、",
   "helpWriteListIntro": "What makes a good statement?",

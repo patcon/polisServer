@@ -104,4 +104,6 @@ module.exports = {
   "noCommentsTryWritingOne": "Si vous souhaitez ajouter quelque chose, rédigez votre propre affirmation.",
   "convIsClosed": "Cette conversation est fermée.",
   "noMoreVotingAllowed": "Aucun autre vote n’est autorisé.",
+
+  "demo": "This is a demo string!"
 };
