@@ -3,7 +3,7 @@ name: Pull & Commit Translations from Mojito
 on:
   schedule:
     # Run every hour.
-    - cron: '20 * * * *'
+    - cron: '30 * * * *'
 
 jobs:
   pull-translations:
