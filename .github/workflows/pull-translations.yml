@@ -3,7 +3,7 @@ name: Pull & Commit Translations from Mojito
 on:
   schedule:
     # Run every hour.
-    - cron: '25 * * * *'
+    - cron: '32 * * * *'
 
 jobs:
   pull-translations:
@@ -42,7 +42,7 @@ jobs:
           path: code
           title: Update translations
           branch: auto/translations
-          labels: [":wheelchair: accessibility", ":nut_and_bolt: p:client-participation"]
+          labels: "♿ accessibility, 🔩 p:client-participation"
           body: |
             This is an automated pull request, created by the translation platform that we use.
 
