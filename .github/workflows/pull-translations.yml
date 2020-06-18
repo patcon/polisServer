@@ -42,3 +42,4 @@ jobs:
           path: code
           title: Update translations
           branch: auto/translations
+          labels: ["♿ accessibility", "🔩 p:client-participation"]
