@@ -44,7 +44,7 @@
     "express": "^4.13.3",
     "file-loader": "https://registry.npmjs.org/file-loader/-/file-loader-0.8.5.tgz",
     "glob": "^7.1.2",
-    "gulp": "^3.9.0",
+    "gulp": "^4.0.2",
     "gulp-cli": "^1.4.0",
     "gulp-gzip": "0.0.4",
     "gulp-rename": "~1.0.0",
