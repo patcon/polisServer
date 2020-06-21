@@ -18,7 +18,7 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("production"),
     }),
-    new BundleAnalyzerPlugin({ token: '<repository-token>' }),
+    new BundleAnalyzerPlugin({ token: process.env.BUNDLE_ANALYZER_TOKEN }),
   ],
   optimization: {
     minimize: true, //Update this to true or false
