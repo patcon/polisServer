@@ -2,6 +2,7 @@
 
 var path = require("path");
 var webpack = require("webpack");
+var BundleAnalyzerPlugin = require('@bundle-analyzer/webpack-plugin');
 
 module.exports = {
   entry: ["./src/index"],
@@ -17,6 +18,7 @@ module.exports = {
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("production"),
     }),
+    new BundleAnalyzerPlugin({ token: '<repository-token>' }),
   ],
   optimization: {
     minimize: true, //Update this to true or false
