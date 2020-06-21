@@ -104,6 +104,9 @@
     "whatwg-fetch": "^0.10.1"
   },
   "bundlewatch": {
+    "trackBranches": [
+      "dev"
+    ],
     "files": [
       {
         "path": "./dist/*.js",
