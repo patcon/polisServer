@@ -26,7 +26,5 @@ jobs:
         npm install
         npm run build:webpack
 
-    - uses: jackyef/bundlewatch-gh-action@0.0.5
-      working-directory: client-admin
-      with:
-        bundlewatch-github-token: ${{ env.BUNDLEWATCH_GITHUB_TOKEN }}
+    - working-directory: client-admin
+      run: npx bundlewatch
