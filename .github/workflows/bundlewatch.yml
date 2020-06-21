@@ -8,9 +8,6 @@ jobs:
   bundlewatch:
     runs-on: ubuntu-latest
     env:
-      # This should be secret, but don't care for now.
-      # TODO: Regenerate at https://service.bundlewatch.io/setup-github
-      BUNDLEWATCH_GITHUB_TOKEN: 7823e169232c4aaaf7407d05ad070fc36e2296e4
       BUNDLE_ANALYZER_TOKEN: ${{ secrets.BUNDLE_ANALYZER_TOKEN }}
 
     steps:
@@ -23,20 +20,5 @@ jobs:
 
     - working-directory: client-admin
       run: |
-        npm install -g bundlesize
-        npm install -g bundlewatch
         npm install
         npm run build:webpack
-
-    - working-directory: client-admin
-      run: npx bundlewatch
-
-    - working-directory: client-admin
-      env:
-        BUNDLESIZE_GITHUB_TOKEN: "5bc4a71868c4ae283c4b1d1d233f440de545d55a"
-        CI_REPO_OWNER: ${{ github.event.repository.owner.login }}
-        CI_REPO_NAME: ${{ github.event.repository.name }}
-        CI_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-        CI_COMMIT_SHA: ${{ github.sha }}
-        CI: true
-      run: npx bundlesize
