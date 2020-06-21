@@ -1,7 +1,11 @@
 {
   "name": "polis-client-admin",
   "version": "0.0.1",
-  "repository": "github:pol-is/polisClientAdmin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/patcon/polisServer.git",
+    "directory": "client-admin"
+  },
   "description": "Polis Admin Console",
   "engines": {
     "node": "8.17.0"
