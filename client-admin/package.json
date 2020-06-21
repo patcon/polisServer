@@ -124,12 +124,12 @@
       "maxSize": "500 kB"
     }
   ],
-  "bundle-analyzer": [
-    {
-      "path": "./dist/*.js",
+  "bundle-analyzer": {
+    "files": [{
+      "test": "dist/*.js",
       "maxSize": "500 kB"
-    }
-  ],
+    }]
+  },
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": "src/**/*.js",
