@@ -1,6 +1,7 @@
 name: "Bundlewatch Github Action"
 
 on:
+  push:
   pull_request:
     types: [synchronize, opened]
 
