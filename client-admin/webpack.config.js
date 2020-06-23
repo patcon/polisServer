@@ -2,7 +2,6 @@
 
 var path = require("path");
 var webpack = require("webpack");
-var BundleAnalyzerPlugin = require('@bundle-analyzer/webpack-plugin');
 
 module.exports = {
   entry: ["./src/index"],
