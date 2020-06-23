@@ -71,7 +71,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.9.6",
-    "@bundle-analyzer/webpack-plugin": "^0.5.1",
     "@material-ui/core": "^4.9.14",
     "boolean": "^0.1.3",
     "color": "^0.7.3",
@@ -108,6 +107,9 @@
     "whatwg-fetch": "^0.10.1"
   },
   "bundle-analyzer": {
+    "ci": {
+      "repoBranchBase": ["dev"]
+    },
     "files": [{
       "test": "dist/*.js",
       "maxSize": "500 kB"
