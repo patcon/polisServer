@@ -106,14 +106,16 @@
     "victory": "^34.3.11",
     "whatwg-fetch": "^0.10.1"
   },
-  "bundle-analyzer": {
+  "bundlewatch": {
     "ci": {
       "repoBranchBase": ["dev"]
     },
-    "files": [{
-      "test": "dist/*.js",
-      "maxSize": "500 kB"
-    }]
+    "files": [
+      {
+        "path": "dist/*.js",
+        "maxSize": "500 kB"
+      }
+    ]
   },
   "jest": {
     "collectCoverage": true,
