@@ -17,10 +17,13 @@ jobs:
       with:
         node-version: 14.4.0
 
-    - run: npm install -g bundlewatch
+    - run: npm install -g bundlewatch@0.2.6
 
     - working-directory: client-admin
+      env:
+        CI_BRANCH_BASE: patcon/bundlewatch-lint
       run: |
         npm install
         npm run build:webpack
         npx bundlewatch
+

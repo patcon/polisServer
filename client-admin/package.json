@@ -108,7 +108,7 @@
   },
   "bundlewatch": {
     "ci": {
-      "repoBranchBase": "dev"
+      "trackBranches": ["patcon/bundlewatch-lint", "dev"]
     },
     "files": [
       {
