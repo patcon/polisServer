@@ -108,7 +108,7 @@
   },
   "bundlewatch": {
     "ci": {
-      "repoBranchBase": ["dev"]
+      "repoBranchBase": "dev"
     },
     "files": [
       {
