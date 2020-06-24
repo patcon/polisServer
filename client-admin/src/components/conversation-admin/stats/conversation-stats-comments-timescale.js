@@ -6,7 +6,7 @@ import _ from "lodash";
 import { VictoryChart } from "victory-chart";
 import { VictoryLine } from "victory-line";
 import { VictoryAxis } from "victory-axis";
-import * as d3 from "d3";
+import * as d3 from "d3-scale";
 
 class CommentsTimescale extends React.Component {
   render() {
