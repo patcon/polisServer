@@ -4,7 +4,7 @@ import React from "react";
 import { VictoryChart } from "victory-chart";
 import { VictoryLine } from "victory-line";
 import { VictoryAxis } from "victory-axis";
-import * as d3 from "d3";
+import * as d3 from "d3-scale";
 
 class CommentersVoters extends React.Component {
   render() {
