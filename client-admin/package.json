@@ -1,11 +1,7 @@
 {
   "name": "polis-client-admin",
   "version": "0.0.1",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/patcon/polisServer.git",
-    "directory": "client-admin"
-  },
+  "repository": "github:pol-is/polisClientAdmin",
   "description": "Polis Admin Console",
   "engines": {
     "node": "8.17.0"
@@ -105,20 +101,6 @@
     "theme-ui": "^0.3.1",
     "victory": "^34.3.11",
     "whatwg-fetch": "^0.10.1"
-  },
-  "bundlewatch": {
-    "ci": {
-      "trackBranches": [
-        "patcon/bundlewatch-lint",
-        "dev"
-      ]
-    },
-    "files": [
-      {
-        "path": "dist/*.js",
-        "maxSize": "500 kB"
-      }
-    ]
   },
   "jest": {
     "collectCoverage": true,

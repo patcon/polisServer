@@ -2,6 +2,10 @@ name: "Bundlewatch Github Action"
 
 on:
   push:
+    # Required so that baseline for comparison is pushed to bundlewatch service.
+    branches: ["dev"]
+  pull_request:
+    types: ["synchronize"]
 
 jobs:
   bundlewatch:
@@ -17,13 +21,28 @@ jobs:
       with:
         node-version: 14.4.0
 
-    - run: npm install -g bundlewatch@0.2.6
+    - name: Install Bundlewatch
+      run: npm install -g bundlewatch@0.2.6
 
-    - working-directory: client-admin
-      env:
-        CI_BRANCH_BASE: patcon/bundlewatch-lint
+    - name: "Install & Build: client-admin"
+      working-directory: client-admin
       run: |
         npm install
         npm run build:webpack
-        npx bundlewatch
 
+    - name: Run Bundlewatch
+      # TODO: Move config to root directory, so easier to run against all components.
+      # See: https://github.com/bundlewatch/bundlewatch/pull/170
+      working-directory: client-admin
+      env:
+        CI_BRANCH_DEFAULT: ${{ github.event.repository.default_branch }}
+
+        PR_COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        PR_BRANCH: ${{ github.event.pull_request.head.ref }}
+        # Overrides `ci.repoBranchBase` (bundlewatch config)
+        PR_BRANCH_BASE: ${{ github.event.pull_request.base.ref }}
+
+        PUSH_COMMIT_SHA: ${{ github.event.after }}
+        PUSH_BRANCH: ${{ env.GITHUB_REF }}
+        PUSH_BRANCH_BASE: ${{ github.event.repository.default_branch }}
+      run: npx bundlewatch --config .bundlewatch.config.js
