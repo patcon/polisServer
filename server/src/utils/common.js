@@ -21,7 +21,7 @@ function hexToStr(hexString) {
   return str;
 }
 
-let polisTypes = {
+const polisTypes = {
   reactions: {
     push: 1,
     pull: -1,

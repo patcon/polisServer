@@ -4,7 +4,10 @@ const pg = require('./db/pg-query');
 
 function encrypt(text) {
   const algorithm = 'aes-256-ctr';
-  const password = process.env.ENCRYPTION_PASSWORD_00001;
+  let password = process.env['ENCRYPTION_PASSWORD_00001'];
+  if (!password) {
+    password = 'DEFAULT_ENCRYPTION_PASSWORD';
+  }
   const cipher = crypto.createCipher(algorithm, password);
   var crypted = cipher.update(text,'utf8','hex');
   crypted += cipher.final('hex');
@@ -13,13 +16,16 @@ function encrypt(text) {
 
 function decrypt(text) {
   const algorithm = 'aes-256-ctr';
-  const password = process.env.ENCRYPTION_PASSWORD_00001;
+  let password = process.env['ENCRYPTION_PASSWORD_00001'];
+  if (!password) {
+    password = 'DEFAULT_ENCRYPTION_PASSWORD';
+  }
   const decipher = crypto.createDecipher(algorithm, password);
-  var dec = decipher.update(text,'hex','utf8');
+  let dec = decipher.update(text,'hex','utf8');
   dec += decipher.final('utf8');
   return dec;
 }
-decrypt; // appease linter
+
 function makeSessionToken() {
   // These can probably be shortened at some point.
   return crypto.randomBytes(32).toString('base64').replace(/[^A-Za-z0-9]/g, "").substr(0, 20);
@@ -57,6 +63,7 @@ function getUserInfoForSessionToken(sessionToken, res, cb) {
   });
 }
 
+
 function createPolisLtiToken(tool_consumer_instance_guid, lti_user_id) {
   return ["xPolisLtiToken", tool_consumer_instance_guid, lti_user_id].join(":::");
 }
@@ -69,22 +76,23 @@ function isPolisSlackTeamUserToken(token) {
 }
 
 // function sendSlackEvent(slack_team, o) {
-//   return pg.queryP("insert into slack_bot_events (slack_team, event) values ($1, $2);", [slack_team, o]);
+//   return pgQueryP("insert into slack_bot_events (slack_team, event) values ($1, $2);", [slack_team, o]);
 // }
-
 function sendSlackEvent(o) {
   return pg.queryP("insert into slack_bot_events (event) values ($1);", [o]);
 }
 
 function parsePolisLtiToken(token) {
   let parts = token.split(/:::/);
-  let o = {
+  return {
     // parts[0] === "xPolisLtiToken", don't need that
     tool_consumer_instance_guid: parts[1],
     lti_user_id: parts[2],
   };
-  return o;
 }
+
+
+
 
 function getUserInfoForPolisLtiToken(token) {
   let o = parsePolisLtiToken(token);
@@ -98,7 +106,6 @@ function getUserInfoForPolisLtiToken(token) {
 
 function startSession(uid, cb) {
   let token = makeSessionToken();
-  //console.log("info",'startSession: token will be: ' + sessionToken);
   console.log("info", 'startSession');
   pg.query("insert into auth_tokens (uid, token, created) values ($1, $2, default);", [uid, token], function(err, repliesSetToken) {
     if (err) {
@@ -119,6 +126,8 @@ function endSession(sessionToken, cb) {
     cb(null);
   });
 }
+
+
 function setupPwReset(uid, cb) {
   function makePwResetToken() {
     // These can probably be shortened at some point.

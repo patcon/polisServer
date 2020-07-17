@@ -1,7 +1,6 @@
 const _ = require('underscore');
-const User = require('../user');
+const PolisUser = require('../user');
 const Session = require('../session');
-
 
 const COOKIES = {
   COOKIE_TEST: 'ct',
@@ -27,37 +26,30 @@ const COOKIES_TO_CLEAR = {
   parent_url: true,
 };
 
-let oneYear = 1000 * 60 * 60 * 24 * 365;
+const oneYear = 1000 * 60 * 60 * 24 * 365;
 
-function setCookie(req, res, setOnPolisDomain, name, value, options) {
+function setCookie(req, res, name, value, options) {
   let o = _.clone(options || {});
   o.path = _.isUndefined(o.path) ? '/' : o.path;
   o.maxAge = _.isUndefined(o.maxAge) ? oneYear : o.maxAge;
-  if (setOnPolisDomain) {
-    o.secure = _.isUndefined(o.secure) ? true : o.secure;
-    o.domain = _.isUndefined(o.domain) ? '.pol.is' : o.domain;
-    // if (/pol.is/.test(req.headers.host)) {
-    //   o.domain = '.pol.is';
-    // }
-  }
   res.cookie(name, value, o);
 }
 
-function setParentReferrerCookie(req, res, setOnPolisDomain, referrer) {
-  setCookie(req, res, setOnPolisDomain, COOKIES.PARENT_REFERRER, referrer, {
+function setParentReferrerCookie(req, res, referrer) {
+  setCookie(req, res, COOKIES.PARENT_REFERRER, referrer, {
     httpOnly: true,
   });
 }
 
-function setParentUrlCookie(req, res, setOnPolisDomain, parent_url) {
-  setCookie(req, res, setOnPolisDomain, COOKIES.PARENT_URL, parent_url, {
+function setParentUrlCookie(req, res, parent_url) {
+  setCookie(req, res, COOKIES.PARENT_URL, parent_url, {
     httpOnly: true,
   });
 }
 
-function setPlanCookie(req, res, setOnPolisDomain, planNumber) {
+function setPlanCookie(req, res, planNumber) {
   if (planNumber > 0) {
-    setCookie(req, res, setOnPolisDomain, COOKIES.PLAN_NUMBER, planNumber, {
+    setCookie(req, res, COOKIES.PLAN_NUMBER, planNumber, {
       // not httpOnly - needed by JS
     });
   }
@@ -65,80 +57,67 @@ function setPlanCookie(req, res, setOnPolisDomain, planNumber) {
 
 }
 
-function setHasEmailCookie(req, res, setOnPolisDomain, email) {
+function setHasEmailCookie(req, res, email) {
   if (email) {
-    setCookie(req, res, setOnPolisDomain, COOKIES.HAS_EMAIL, 1, {
+    setCookie(req, res, COOKIES.HAS_EMAIL, 1, {
       // not httpOnly - needed by JS
     });
   }
   // else falsy
 }
 
-function setUserCreatedTimestampCookie(req, res, setOnPolisDomain, timestamp) {
-  setCookie(req, res, setOnPolisDomain, COOKIES.USER_CREATED_TIMESTAMP, timestamp, {
+function setUserCreatedTimestampCookie(req, res, timestamp) {
+  setCookie(req, res, COOKIES.USER_CREATED_TIMESTAMP, timestamp, {
     // not httpOnly - needed by JS
   });
 }
 
-function setTokenCookie(req, res, setOnPolisDomain, token) {
-  setCookie(req, res, setOnPolisDomain, COOKIES.TOKEN, token, {
+function setTokenCookie(req, res, token) {
+  setCookie(req, res, COOKIES.TOKEN, token, {
     httpOnly: true,
   });
 }
 
-function setUidCookie(req, res, setOnPolisDomain, uid) {
-  setCookie(req, res, setOnPolisDomain, COOKIES.UID, uid, {
+function setUidCookie(req, res, uid) {
+  setCookie(req, res, COOKIES.UID, uid, {
     // not httpOnly - needed by JS
   });
 }
 
-function setPermanentCookie(req, res, setOnPolisDomain, token) {
-  setCookie(req, res, setOnPolisDomain, COOKIES.PERMANENT_COOKIE, token, {
+function setPermanentCookie(req, res, token) {
+  setCookie(req, res, COOKIES.PERMANENT_COOKIE, token, {
     httpOnly: true,
   });
 }
 
-function setCookieTestCookie(req, res, setOnPolisDomain) {
-  setCookie(req, res, setOnPolisDomain, COOKIES.COOKIE_TEST, 1, {
+function setCookieTestCookie(req, res) {
+  setCookie(req, res, COOKIES.COOKIE_TEST, 1, {
     // not httpOnly - needed by JS
   });
-}
-
-function shouldSetCookieOnPolisDomain(req) {
-  // FIXME domainOverride
-  let setOnPolisDomain = !(process.env.DOMAIN_OVERRIDE || null);
-  let origin = req.headers.origin || "";
-  if (setOnPolisDomain && origin.match(/^http:\/\/localhost:[0-9]{4}/)) {
-    setOnPolisDomain = false;
-  }
-  return setOnPolisDomain;
 }
 
 function addCookies(req, res, token, uid) {
-  return User.getUserInfoForUid2(uid).then(function(o) {
+  return PolisUser.getUserInfoForUid2(uid).then(function(o) {
     let email = o.email;
     let created = o.created;
     let plan = o.plan;
 
-    let setOnPolisDomain = shouldSetCookieOnPolisDomain(req);
-
-    setTokenCookie(req, res, setOnPolisDomain, token);
-    setUidCookie(req, res, setOnPolisDomain, uid);
-    setPlanCookie(req, res, setOnPolisDomain, plan);
-    setHasEmailCookie(req, res, setOnPolisDomain, email);
-    setUserCreatedTimestampCookie(req, res, setOnPolisDomain, created);
+    setTokenCookie(req, res, token);
+    setUidCookie(req, res, uid);
+    setPlanCookie(req, res, plan);
+    setHasEmailCookie(req, res, email);
+    setUserCreatedTimestampCookie(req, res, created);
     if (!req.cookies[COOKIES.PERMANENT_COOKIE]) {
-      setPermanentCookie(req, res, setOnPolisDomain, Session.makeSessionToken());
+      setPermanentCookie(req, res, Session.makeSessionToken());
     }
     res.header("x-polis", token);
   });
 }
 
 function getPermanentCookieAndEnsureItIsSet(req, res) {
-  let setOnPolisDomain = shouldSetCookieOnPolisDomain(req);
   if (!req.cookies[COOKIES.PERMANENT_COOKIE]) {
     let token = Session.makeSessionToken();
-    setPermanentCookie(req, res, setOnPolisDomain, token);
+    setPermanentCookie(req, res, token);
     return token;
   } else {
     return req.cookies[COOKIES.PERMANENT_COOKIE];
@@ -154,7 +133,6 @@ module.exports = {
   setPlanCookie,
   setPermanentCookie,
   setCookieTestCookie,
-  shouldSetCookieOnPolisDomain,
   addCookies,
   getPermanentCookieAndEnsureItIsSet
 };

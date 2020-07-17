@@ -1,18 +1,24 @@
 const _ = require('underscore');
 const pg = require('../db/pg-query');
 const fail = require('../log').fail;
-const Config = require('../config');
+const Config = require('../polis-config');
+const i18n = require('i18n');
 const Cookies = require('../utils/cookies');
 const User = require('../user');
 const Session = require('../session');
 const Utils = require('../utils/common');
 const Password = require('./password');
 
-const AWS = require('aws-sdk');
-const emailSenders = require('../email/sendEmailSesMailgun').EmailSenders(AWS);
-const sendTextEmail = emailSenders.sendTextEmail;
+i18n.configure({
+  locales:['en', 'zh-TW'],
+  directory: __dirname + '/locales'
+});
 
 function createUser(req, res) {
+  if (!!Config.get('STOP_REGISTER')) {
+    res.send('New user register by e-mail is turned off.');
+    return;
+  }
   const COOKIES = require('../utils/cookies').COOKIES;
   let hname = req.p.hname;
   let password = req.p.password;
@@ -38,6 +44,11 @@ function createUser(req, res) {
       // TODO_SECURITY add the extra token associated with the site_id owner.
       site_id = decodedParams.site_id;
     }
+  }
+
+  let shouldAddToIntercom = req.p.owner;
+  if (req.p.lti_user_id) {
+    shouldAddToIntercom = false;
   }
 
   if (password2 && (password !== password2)) {
@@ -69,14 +80,14 @@ function createUser(req, res) {
     return;
   }
 
-  pg.queryP("SELECT * FROM users WHERE email = ($1)", [email]).then(function(rows) {
+  pg.queryP("SELECT * FROM users WHERE email=($1);", [email]).then(function (rows) {
 
     if (rows.length > 0) {
       fail(res, 403, "polis_err_reg_user_with_that_email_exists");
       return;
     }
 
-    Password.generateHashedPassword(password, function(err, hashedPassword) {
+    require('../auth/password').generateHashedPassword(password, function (err, hashedPassword) {
       if (err) {
         fail(res, 500, "polis_err_generating_hash", err);
         return;
@@ -91,7 +102,9 @@ function createUser(req, res) {
         vals.push(site_id); // TODO use sql query builder
       }
 
-      pg.query(query, vals, function(err, result) {
+      doSendVerification(req, email);
+
+      pg.query(query, vals, function (err, result) {
         if (err) {
           winston.log("info", err);
           fail(res, 500, "polis_err_reg_failed_to_add_user_record", err);
@@ -99,18 +112,19 @@ function createUser(req, res) {
         }
         let uid = result && result.rows && result.rows[0] && result.rows[0].uid;
 
-        pg.query("insert into jianiuevyew (uid, pwhash) values ($1, $2);", [uid, hashedPassword], function(err, results) {
+        pg.query("insert into jianiuevyew (uid, pwhash) values ($1, $2);", [uid, hashedPassword], function (err) {
           if (err) {
             winston.log("info", err);
             fail(res, 500, "polis_err_reg_failed_to_add_user_record", err);
             return;
           }
-          Session.startSession(uid, function(err, token) {
+
+          Session.startSession(uid, function (err, token) {
             if (err) {
               fail(res, 500, "polis_err_reg_failed_to_start_session", err);
               return;
             }
-            Cookies.addCookies(req, res, token, uid).then(function() {
+            Cookies.addCookies(req, res, token, uid).then(function () {
 
               let ltiUserPromise = lti_user_id ?
                 User.addLtiUserIfNeeded(uid, lti_user_id, tool_consumer_instance_guid, lti_user_image) :
@@ -118,7 +132,7 @@ function createUser(req, res) {
               let ltiContextMembershipPromise = lti_context_id ?
                 User.addLtiContextMembership(uid, lti_context_id, tool_consumer_instance_guid) :
                 Promise.resolve();
-              Promise.all([ltiUserPromise, ltiContextMembershipPromise]).then(function() {
+              Promise.all([ltiUserPromise, ltiContextMembershipPromise]).then(function () {
                 if (lti_user_id) {
                   if (afterJoinRedirectUrl) {
                     res.redirect(afterJoinRedirectUrl);
@@ -139,12 +153,31 @@ function createUser(req, res) {
                     // token: token
                   });
                 }
-              }).catch(function(err) {
+              }).catch(function (err) {
                 fail(res, 500, "polis_err_creating_user_associating_with_lti_user", err);
               });
-            }, function(err) {
+
+              if (shouldAddToIntercom) {
+                let params = {
+                  "email": email,
+                  "name": hname,
+                  "user_id": uid,
+                };
+                let customData = {};
+                if (referrer) {
+                  customData.referrer = referrer;
+                }
+                if (organization) {
+                  customData.org = organization;
+                }
+                customData.uid = uid;
+                if (_.keys(customData).length) {
+                  params.custom_data = customData;
+                }
+              }
+            }, function (err) {
               fail(res, 500, "polis_err_adding_cookies", err);
-            }).catch(function(err) {
+            }).catch(function (err) {
               fail(res, 500, "polis_err_adding_user", err);
             });
           }); // end startSession
@@ -152,32 +185,30 @@ function createUser(req, res) {
       }); // end insert user
     }); // end generateHashedPassword
 
-  }, function(err) {
+  }, function (err) {
     fail(res, 500, "polis_err_reg_checking_existing_users", err);
   });
 }
 
 function doSendVerification(req, email) {
-  return Password.generateTokenP(30, false).then(function(einvite) {
-    return pg.queryP("insert into einvites (email, einvite) values ($1, $2);", [email, einvite]).then(function(rows) {
+  return Password.generateTokenP(30, false).then(function (einvite) {
+    return pg.queryP("insert into einvites (email, einvite) values ($1, $2);", [email, einvite]).then(function (rows) {
       return sendVerificationEmail(req, email, einvite);
     });
   });
 }
 
 function sendVerificationEmail(req, email, einvite) {
-  let serverName = Config.getServerNameWithProtocol(req);
-  let body =
-`Welcome to pol.is!
-
-Click this link to verify your email address:
-
-${serverName}/api/v3/verify?e=${einvite}`;
-
-  return sendTextEmail(
+  let serverName = Config.get('SERVICE_URL');
+  if (!serverName) {
+    console.error('Config SERVICE_URL is not set!');
+    return;
+  }
+  let body = i18n.__("PolisVerification", serverName, einvite);
+  return require('../email/mailgun').sendText(
     Config.get('POLIS_FROM_ADDRESS'),
     email,
-    "Polis verification",
+    i18n.__("Polis verification"),
     body);
 }
 
@@ -200,8 +231,8 @@ function generateAndRegisterZinvite(zid, generateShort) {
   if (generateShort) {
     len = 6;
   }
-  return Password.generateTokenP(len, false).then(function(zinvite) {
-    return pg.queryP('INSERT INTO zinvites (zid, zinvite, created) VALUES ($1, $2, default);', [zid, zinvite]).then(function(rows) {
+  return Password.generateTokenP(len, false).then(function (zinvite) {
+    return pg.queryP('INSERT INTO zinvites (zid, zinvite, created) VALUES ($1, $2, default);', [zid, zinvite]).then(function (rows) {
       return zinvite;
     });
   });

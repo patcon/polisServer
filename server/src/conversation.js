@@ -6,13 +6,13 @@ const LruCache = require("lru-cache");
 function createXidRecord(ownerUid, uid, xid, x_profile_image_url, x_name, x_email) {
   return pg.queryP("insert into xids (owner, uid, xid, x_profile_image_url, x_name, x_email) values ($1, $2, $3, $4, $5, $6) " +
     "on conflict (owner, xid) do nothing;", [
-      ownerUid,
-      uid,
-      xid,
-      x_profile_image_url || null,
-      x_name || null,
-      x_email || null,
-    ]);
+    ownerUid,
+    uid,
+    xid,
+    x_profile_image_url || null,
+    x_name || null,
+    x_email || null,
+  ]);
 }
 
 function createXidRecordByZid(zid, uid, xid, x_profile_image_url, x_name, x_email) {
@@ -24,13 +24,13 @@ function createXidRecordByZid(zid, uid, xid, x_profile_image_url, x_name, x_emai
       }
       return pg.queryP("insert into xids (owner, uid, xid, x_profile_image_url, x_name, x_email) values ((select org_id from conversations where zid = ($1)), $2, $3, $4, $5, $6) " +
         "on conflict (owner, xid) do nothing;", [
-          zid,
-          uid,
-          xid,
-          x_profile_image_url || null,
-          x_name || null,
-          x_email || null,
-        ]);
+        zid,
+        uid,
+        xid,
+        x_profile_image_url || null,
+        x_name || null,
+        x_email || null,
+      ]);
     });
   });
 }
@@ -47,7 +47,7 @@ function getXidRecordByXidOwnerId(xid, owner, zid_optional, x_profile_image_url,
         return null;
       }
 
-      var shouldCreateXidEntryPromise = !zid_optional ? Promise.resolve(true) : getConversationInfo(zid_optional).then((conv) => {
+      let shouldCreateXidEntryPromise = !zid_optional ? Promise.resolve(true) : getConversationInfo(zid_optional).then((conv) => {
         return conv.use_xid_whitelist ? isXidWhitelisted(owner, xid) : Promise.resolve(true);
       });
 
@@ -74,7 +74,6 @@ function getXidRecordByXidOwnerId(xid, owner, zid_optional, x_profile_image_url,
     return rows;
   });
 }
-
 function getXidStuff(xid, zid) {
   return getXidRecord(xid, zid).then((rows) => {
     if (!rows || !rows.length) {
@@ -96,6 +95,7 @@ function isXidWhitelisted(owner, xid) {
     return !!rows && rows.length > 0;
   });
 }
+
 
 function getConversationInfo(zid) {
   return new MPromise("getConversationInfo", function(resolve, reject) {
@@ -127,13 +127,13 @@ const conversationIdToZidCache = new LruCache({
 
 // NOTE: currently conversation_id is stored as zinvite
 function getZidFromConversationId(conversation_id) {
-  return new MPromise("getZidFromConversationId", function(resolve, reject) {
+  return new MPromise("getZidFromConversationId", function (resolve, reject) {
     let cachedZid = conversationIdToZidCache.get(conversation_id);
     if (cachedZid) {
       resolve(cachedZid);
       return;
     }
-    pg.query_readOnly("select zid from zinvites where zinvite = ($1);", [conversation_id], function(err, results) {
+    pg.query_readOnly("select zid from zinvites where zinvite = ($1);", [conversation_id], function (err, results) {
       if (err) {
         return reject(err);
       } else if (!results || !results.rows || !results.rows.length) {

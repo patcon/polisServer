@@ -12,13 +12,19 @@ const Utils = require('./utils/common');
 const useTranslateApi = isTrue(process.env.SHOULD_USE_TRANSLATION_API);
 let translateClient = null;
 if (useTranslateApi) {
-  const GOOGLE_CREDS_TEMP_FILENAME = ".google_creds_temp";
+  let creds = process.env.GOOGLE_APPLICATION_CREDENTIALS;
+  if (creds) {
+    translateClient = Translate({
+      projectId: JSON.parse(fs.readFileSync(creds)).project_id
+    });
+  } else {
+    const GOOGLE_CREDS_TEMP_FILENAME = ".google_creds_temp";
 
-  fs.writeFileSync(GOOGLE_CREDS_TEMP_FILENAME, process.env.GOOGLE_CREDS_STRINGIFIED);
-
-  translateClient = Translate({
-    projectId: JSON.parse(fs.readFileSync(GOOGLE_CREDS_TEMP_FILENAME)).project_id,
-  });
+    fs.writeFileSync(GOOGLE_CREDS_TEMP_FILENAME, process.env.GOOGLE_CREDS_STRINGIFIED);
+    translateClient = Translate({
+      projectId: JSON.parse(fs.readFileSync(GOOGLE_CREDS_TEMP_FILENAME)).project_id,
+    });
+  }
 }
 
 function getComment(zid, tid) {
@@ -31,7 +37,7 @@ function getComments(o) {
   let commentListPromise = o.moderation ? _getCommentsForModerationList(o) : _getCommentsList(o);
   let convPromise = Conversation.getConversationInfo(o.zid);
   let conv = null;
-  return Promise.all([convPromise, commentListPromise]).then(function(a) {
+  return Promise.all([convPromise, commentListPromise]).then(function (a) {
     let rows = a[1];
     conv = a[0];
     let cols = [
@@ -57,7 +63,7 @@ function getComments(o) {
       cols.push("pass_count"); //  in  moderation queries, we join in the vote count
       cols.push("count"); //  in  moderation queries, we join in the vote count
     }
-    rows = rows.map(function(row) {
+    rows = rows.map(function (row) {
       let x = _.pick(row, cols);
       if (!_.isUndefined(x.count)) {
         x.count = Number(x.count);
@@ -65,18 +71,18 @@ function getComments(o) {
       return x;
     });
     return rows;
-  }).then(function(comments) {
+  }).then(function (comments) {
 
     let include_social = !conv.is_anon && o.include_social;
 
     if (include_social) {
-      let nonAnonComments = comments.filter(function(c) {
+      let nonAnonComments = comments.filter(function (c) {
         return !c.anon && !c.is_seed;
       });
       let uids = _.pluck(nonAnonComments, "uid");
-      return User.getSocialInfoForUsers(uids, o.zid).then(function(socialInfos) {
+      return User.getSocialInfoForUsers(uids, o.zid).then(function (socialInfos) {
         let uidToSocialInfo = {};
-        socialInfos.forEach(function(info) {
+        socialInfos.forEach(function (info) {
           // whitelist properties to send
           let infoToReturn = _.pick(info, [
             // fb
@@ -92,6 +98,9 @@ function getComments(o) {
             // xInfo
             "x_profile_image_url",
             "x_name",
+            // join
+            'nickname',
+            'picture'
           ]);
           infoToReturn.tw_verified = !!info.verified;
           infoToReturn.tw_followers_count = info.followers_count;
@@ -114,7 +123,7 @@ function getComments(o) {
 
           uidToSocialInfo[info.uid] = infoToReturn;
         });
-        return comments.map(function(c) {
+        return comments.map(function (c) {
           let s = uidToSocialInfo[c.uid];
           if (s) {
             if (!c.anon) { // s should be undefined in this case, but adding a double-check here in case.
@@ -127,8 +136,8 @@ function getComments(o) {
     } else {
       return comments;
     }
-  }).then(function(comments) {
-    comments.forEach(function(c) {
+  }).then(function (comments) {
+    comments.forEach(function (c) {
       delete c.uid;
       delete c.anon;
     });
@@ -136,9 +145,10 @@ function getComments(o) {
   });
 }
 
+
 function _getCommentsForModerationList(o) {
-  var strictCheck = Promise.resolve(null);
-  var include_voting_patterns = o.include_voting_patterns;
+  let strictCheck = Promise.resolve(null);
+  let include_voting_patterns = o.include_voting_patterns;
 
   if (o.modIn) {
     strictCheck = pg.queryP("select strict_moderation from conversations where zid = ($1);", [o.zid]).then((c) => {
@@ -211,8 +221,8 @@ function _getCommentsForModerationList(o) {
 }
 
 function _getCommentsList(o) {
-  return new MPromise("_getCommentsList", function(resolve, reject) {
-    Conversation.getConversationInfo(o.zid).then(function(conv) {
+  return new MPromise("_getCommentsList", function (resolve, reject) {
+    Conversation.getConversationInfo(o.zid).then(function (conv) {
 
       let q = SQL.sql_comments.select(SQL.sql_comments.star())
         .where(
@@ -233,9 +243,9 @@ function _getCommentsList(o) {
         q = q.and(
           SQL.sql_comments.tid.notIn(
             SQL.sql_votes_latest_unique.subQuery().select(SQL.sql_votes_latest_unique.tid)
-            .where(
-              SQL.sql_votes_latest_unique.zid.equals(o.zid)
-            ).and(
+              .where(
+                SQL.sql_votes_latest_unique.zid.equals(o.zid)
+              ).and(
               SQL.sql_votes_latest_unique.pid.equals(o.not_voted_by_pid)
             )
           )
@@ -272,7 +282,7 @@ function _getCommentsList(o) {
       } else {
         q = q.limit(999); // TODO paginate
       }
-      return pg.query(q.toString(), [], function(err, docs) {
+      return pg.query(q.toString(), [], function (err, docs) {
         if (err) {
           reject(err);
           return;
@@ -296,6 +306,35 @@ function getNumberOfCommentsRemaining(zid, pid) {
     "select cast(remaining.remaining as integer), cast(total.total as integer), cast(($2) as integer) as pid from remaining, total;", [zid, pid]);
 }
 
+function getCommentTranslations(zid, tid, lang) {
+  let language;
+  if (lang.indexOf('-') > 0) {
+    language = lang.split('-')[0];
+  } else {
+    language = lang;
+  }
+  return new Promise((resolve) => {
+    getComment(zid, tid).then((comment) => {
+      pg.queryP("select * from comment_translations where zid=$1 and tid=$2 and lang LIKE $3;",
+        [zid, tid, language + '%']).then((existingTranslations) => {
+        if (existingTranslations && existingTranslations.length > 0) {
+          // If exact existing translation exists, just use it
+          for (let i in existingTranslations) {
+            if (existingTranslations[i].lang === lang) {
+              existingTranslations = [existingTranslations[i]];
+              break;
+            }
+          }
+          resolve(existingTranslations[0]);
+        } else {
+          // Else we translate then store
+          resolve(translateAndStoreComment(zid, tid, comment.txt, lang));
+        }
+      });
+    });
+  });
+}
+
 function translateAndStoreComment(zid, tid, txt, lang) {
   if (useTranslateApi) {
     return translateString(txt, lang).then((results) => {
@@ -311,9 +350,46 @@ function translateAndStoreComment(zid, tid, txt, lang) {
 
 function translateString(txt, target_lang) {
   if (useTranslateApi) {
+    // Let traditional Chinese has higher priority
+    if (target_lang === 'zh') {
+      target_lang = 'zh-TW';
+    }
     return translateClient.translate(txt, target_lang);
   }
   return Promise.resolve(null);
+}
+
+function appendTranslationToComments(comments, option) {
+  return new Promise((resolve, reject) => {
+    // As policy of polis, remove region code
+    let lang = option.lang;
+    if (lang.indexOf('-') > 0) {
+      lang = lang.split('-')[0];
+    }
+    pg.queryP('SELECT * FROM comment_translations WHERE zid=$1 AND lang LIKE $2;', [option.zid, lang + "%"])
+      .then(rows => {
+        resolve(comments.map((c) => {
+          // Strict language-region check here
+          if (c.lang === option.lang) {
+            return c;
+          }
+          for (let i in rows) {
+            let row = rows[i];
+            // noinspection EqualityComparisonWithCoercionJS
+            if (c.tid == row.tid) {
+              // Ignore identical text (happens in the case of the same language with different region)
+              if (row.txt !== c.txt) {
+                c.translatedText = {};
+                c.translatedText[lang] = row.txt;
+              }
+              return c;
+            }
+          }
+          return c;
+        }));
+      })
+      .catch(error => reject(error));
+  });
 }
 
 function detectLanguage(txt) {
@@ -332,6 +408,8 @@ module.exports = {
   _getCommentsForModerationList,
   _getCommentsList,
   getNumberOfCommentsRemaining,
+  getCommentTranslations,
   translateAndStoreComment,
+  appendTranslationToComments,
   detectLanguage
 };

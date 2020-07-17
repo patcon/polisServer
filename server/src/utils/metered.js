@@ -21,7 +21,6 @@ function addInRamMetric(metricName, val) {
 }
 
 
-
 // metered promise
 function MPromise(name, f) {
   let p = new Promise(f);
@@ -41,7 +40,7 @@ function MPromise(name, f) {
     setTimeout(function() {
       addInRamMetric(name + ".fail", duration, end);
     }, 100);
-  }).catch(function(err) {
+  }).catch(function() {
     let end = Date.now();
     let duration = end - start;
     setTimeout(function() {

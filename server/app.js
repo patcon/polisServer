@@ -1,23 +1,28 @@
 // Copyright (C) 2012-present, The Authors. This program is free software: you can redistribute it and/or  modify it under the terms of the GNU Affero General Public License, version 3, as published by the Free Software Foundation. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General Public License for more details. You should have received a copy of the GNU Affero General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
 "use strict";
 
+require('./config');
+
 const Promise = require('bluebird');
 const express = require('express');
+const optional = require("optional");
+const Parameter = require('./src/utils/parameter');
 
 const server = require('./src/server');
 
+const polisServerBrand = optional('polisServerBrand');
+
 const app = express();
 
+console.log('Server initilizing starts');
 
-console.log('init 1');
-
-var helpersInitialized = new Promise(function(resolve, reject) {
+server.initi18n(app);
+var helpersInitialized = new Promise(function (resolve, reject) {
   resolve(server.initializePolisHelpers());
 });
 
 
-
-helpersInitialized.then(function(o) {
+helpersInitialized.then(function (o) {
   const {
     addCorsHeader,
     auth,
@@ -26,8 +31,6 @@ helpersInitialized.then(function(o) {
     denyIfNotFromWhitelistedDomain,
     devMode,
     enableAgid,
-    fetchThirdPartyCookieTestPt1,
-    fetchThirdPartyCookieTestPt2,
     fetchIndexForAdminPage,
     fetchIndexForConversation,
     fetchIndexForReportPage,
@@ -45,7 +48,6 @@ helpersInitialized.then(function(o) {
     redirectIfApiDomain,
     redirectIfHasZidButNoConversationId,
     redirectIfNotHttps,
-    redirectIfWrongDomain,
     timeout,
     winston,
     writeDefaultHead,
@@ -123,7 +125,6 @@ helpersInitialized.then(function(o) {
     handle_GET_votes_me,
     handle_GET_xids,
     handle_GET_zinvites,
-
 
 
     handle_POST_auth_deregister,
@@ -232,10 +233,10 @@ helpersInitialized.then(function(o) {
   ////////////////////////////////////////////
   ////////////////////////////////////////////
 
-  app.use(function(req, res, next) {
-    console.log("before");
-    console.log(req.body);
-    console.log(req.headers);
+  app.use(function (req, res, next) {
+    // console.log("before");
+    // console.log(req.body);
+    // console.log(req.headers);
     next();
   });
 
@@ -245,7 +246,6 @@ helpersInitialized.then(function(o) {
   app.use(express.cookieParser());
   app.use(express.bodyParser());
   app.use(writeDefaultHead);
-  app.use(redirectIfWrongDomain);
   app.use(redirectIfApiDomain);
 
   if (devMode) {
@@ -258,13 +258,13 @@ helpersInitialized.then(function(o) {
   app.use(middleware_log_request_body);
   app.use(middleware_log_middleware_errors);
 
-  app.use(function(req, res, next) {
-    console.log("part2");
-    console.log(req.body);
-    console.log(req.headers);
+  app.use(function (req, res, next) {
+    // console.log("part2");
+    // console.log(req.body);
+    // console.log(req.headers);
     next();
   });
-
+  
   app.all("/api/v3/*", addCorsHeader);
   app.all("/font/*", addCorsHeader);
   app.all("/api/v3/*", middleware_check_if_options);
@@ -286,7 +286,6 @@ helpersInitialized.then(function(o) {
   ////////////////////////////////////////////
 
 
-
   app.get("/api/v3/math/pca",
     handle_GET_math_pca);
 
@@ -304,7 +303,6 @@ helpersInitialized.then(function(o) {
     need('report_id', getReportIdFetchRid, assignToPCustom('rid')),
     want('math_tick', getInt, assignToP, -1),
     handle_GET_math_correlationMatrix);
-
 
 
   app.get("/api/v3/dataExport",
@@ -632,6 +630,8 @@ helpersInitialized.then(function(o) {
     want('include_demographics', getBool, assignToP),
     //    need('lastServerToken', _.identity, assignToP),
     want('include_voting_patterns', getBool, assignToP, false),
+    want('translate', getBool, assignToP, false),
+    want('lang', getStringLimitLength(0, 6), assignToP),
     resolve_pidThing('not_voted_by_pid', assignToP, "get:comments:not_voted_by_pid"),
     resolve_pidThing('pid', assignToP, "get:comments:pid"),
     handle_GET_comments);
@@ -673,7 +673,7 @@ helpersInitialized.then(function(o) {
     auth(assignToP),
     need('conversation_id', getConversationIdFetchZid, assignToPCustom('zid')),
     want('tid', getInt, assignToP),
-    want('lang', getStringLimitLength(1,10), assignToP),
+    want('lang', getStringLimitLength(1, 10), assignToP),
     handle_GET_comments_translations);
 
   app.get("/api/v3/votes/me",
@@ -698,7 +698,7 @@ helpersInitialized.then(function(o) {
     resolve_pidThing('not_voted_by_pid', assignToP, "get:nextComment"),
     want('without', getArrayOfInt, assignToP),
     want('include_social', getBool, assignToP),
-    want('lang', getStringLimitLength(1,10), assignToP), // preferred language of nextComment
+    want('lang', getStringLimitLength(1, 10), assignToP), // preferred language of nextComment
     haltOnTimeout,
     handle_GET_nextComment);
 
@@ -711,7 +711,7 @@ helpersInitialized.then(function(o) {
     hangle_GET_testDatabase);
 
   app.get("/robots.txt",
-    function(req, res) {
+    function (req, res) {
       res.send("User-agent: *\n" +
         "Disallow: /api/");
     });
@@ -722,7 +722,7 @@ helpersInitialized.then(function(o) {
     want('ptptoiLimit', getInt, assignToP),
     want('conversation_id', getConversationIdFetchZid, assignToPCustom('zid')),
     want('conversation_id', getStringLimitLength(1, 1000), assignToP), // we actually need conversation_id to build a url
-    want('lang', getStringLimitLength(1,10), assignToP), // preferred language of nextComment
+    want('lang', getStringLimitLength(1, 10), assignToP), // preferred language of nextComment
 
     want('domain_whitelist_override_key', getStringLimitLength(1, 1000), assignToP),
     denyIfNotFromWhitelistedDomain, // this seems like the easiest place to enforce the domain whitelist. The index.html is cached on cloudflare, so that's not the right place.
@@ -740,9 +740,14 @@ helpersInitialized.then(function(o) {
     want('weight', getNumberInRange(-1, 1), assignToP, 0),
     resolve_pidThing('pid', assignToP, "post:votes"),
     want('xid', getStringLimitLength(1, 999), assignToP),
-    want('lang', getStringLimitLength(1,10), assignToP), // language of the next comment to be returned
+    want('lang', getStringLimitLength(1, 10), assignToP), // language of the next comment to be returned
     handle_POST_votes);
 
+  app.get("/api/v3/logMaxmindResponse",
+    auth(assignToP),
+    need('user_uid', getInt, assignToP),
+    need('conversation_id', getConversationIdFetchZid, assignToPCustom('zid')),
+    handle_GET_logMaxmindResponse);
 
   app.put("/api/v3/participants_extended",
     auth(assignToP),
@@ -814,7 +819,6 @@ helpersInitialized.then(function(o) {
     need('tid', getInt, assignToP),
     need('include', getBool, assignToP),
     handle_POST_reportCommentSelections);
-    
 
 
   // use this to generate them
@@ -1221,7 +1225,7 @@ helpersInitialized.then(function(o) {
     want('ui_lang', getStringLimitLength(1, 10), assignToP), // not persisted
     want('dwok', getStringLimitLength(1, 1000), assignToP), // not persisted
     want('xid', getStringLimitLength(1, 999), assignToP), // not persisted
-    want('subscribe_type', getStringLimitLength(1,9), assignToP), // not persisted
+    want('subscribe_type', getStringLimitLength(1, 9), assignToP), // not persisted
     want('x_name', getStringLimitLength(1, 746), assignToP),  // not persisted here, but later on POST vote/comment
     want('x_profile_image_url', getStringLimitLength(1, 3000), assignToP),  // not persisted here, but later on POST vote/comment
     want('x_email', getStringLimitLength(256), assignToP),  // not persisted here, but later on POST vote/comment
@@ -1280,16 +1284,20 @@ helpersInitialized.then(function(o) {
     handle_POST_waitinglist);
 
   app.post("/api/v3/metrics",
-      authOptional(assignToP),
-      need('types', getArrayOfInt, assignToP),
-      need('times', getArrayOfInt, assignToP),
-      need('durs', getArrayOfInt, assignToP),
-      need('clientTimestamp', getInt, assignToP),
-      handle_POST_metrics);
+    authOptional(assignToP),
+    need('types', getArrayOfInt, assignToP),
+    need('times', getArrayOfInt, assignToP),
+    need('durs', getArrayOfInt, assignToP),
+    need('clientTimestamp', getInt, assignToP),
+    handle_POST_metrics);
+
+  if (polisServerBrand && polisServerBrand.registerRoutes) {
+    polisServerBrand.registerRoutes(app, o);
+  }
 
   function makeFetchIndexWithoutPreloadData() {
     let port = portForParticipationFiles;
-    return function(req, res) {
+    return function (req, res) {
       return fetchIndexWithoutPreloadData(req, res, port);
     };
   }
@@ -1325,6 +1333,7 @@ helpersInitialized.then(function(o) {
   app.get(/^\/bot(\/.*)?/, fetchIndexForAdminPage);
   app.get(/^\/conversations(\/.*)?/, fetchIndexForAdminPage);
   app.get(/^\/signout(\/.*)?/, fetchIndexForAdminPage);
+  app.get(/^\/signin-join/, require('./src/auth/join').signIn);
   app.get(/^\/signin(\/.*)?/, fetchIndexForAdminPage);
   app.get(/^\/dist\/admin_bundle.js$/, makeFileFetcher(hostname, portForAdminFiles, "/dist/admin_bundle.js", {
     'Content-Type': "application/javascript",
@@ -1357,9 +1366,6 @@ helpersInitialized.then(function(o) {
   app.get(/^\/company$/, fetchIndexForAdminPage);
 
   app.get(/^\/report\/r?[0-9][0-9A-Za-z]+(\/.*)?/, fetchIndexForReportPage);
-  
-  app.get(/^\/thirdPartyCookieTestPt1\.html$/, fetchThirdPartyCookieTestPt1);
-  app.get(/^\/thirdPartyCookieTestPt2\.html$/, fetchThirdPartyCookieTestPt2);
 
   app.get(/^\/embed$/, makeFileFetcher(hostname, portForAdminFiles, "/embed.html", {
     'Content-Type': "text/html",
@@ -1401,27 +1407,27 @@ helpersInitialized.then(function(o) {
 
   // ends in slash? redirect to non-slash version
   app.get(/.*\//,
-  function(req, res) {
-    let pathAndQuery = req.originalUrl;
+    function (req, res) {
+      let pathAndQuery = req.originalUrl;
 
-    // remove slash at end
-    if (pathAndQuery.endsWith("/")) {
-      pathAndQuery = pathAndQuery.slice(0, pathAndQuery.length-1);
-    }
+      // remove slash at end
+      if (pathAndQuery.endsWith("/")) {
+        pathAndQuery = pathAndQuery.slice(0, pathAndQuery.length - 1);
+      }
 
-    // remove slashes before "?"
-    if (pathAndQuery.indexOf("?") >= 1) {
-      pathAndQuery = pathAndQuery.replace("/\?", "?");
-    }
+      // remove slashes before "?"
+      if (pathAndQuery.indexOf("?") >= 1) {
+        pathAndQuery = pathAndQuery.replace("/\?", "?");
+      }
 
-    let fullUrl = req.protocol + '://' + req.get('host') + pathAndQuery;
+      let fullUrl = req.protocol + '://' + req.get('host') + pathAndQuery;
 
-    if (pathAndQuery !== req.originalUrl) {
-      res.redirect(fullUrl);
-    } else {
-      proxy(req, res);
-    }
-  });
+      if (pathAndQuery !== req.originalUrl) {
+        res.redirect(fullUrl);
+      } else {
+        proxy(req, res);
+      }
+    });
 
 
   var missingFilesGet404 = false;
@@ -1439,7 +1445,8 @@ helpersInitialized.then(function(o) {
 
   winston.log("info", 'started on port ' + process.env.PORT);
 
-}, function(err) {
+}, function (err) {
   console.error("failed to init server");
   console.error(err);
 });
+

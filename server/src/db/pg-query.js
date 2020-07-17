@@ -1,5 +1,5 @@
 const _ = require('underscore');
-const Config = require('../config');
+const Config = require('../polis-config');
 const yell = require('../log').yell;
 const MPromise = require('../utils/metered').MPromise;
 
@@ -18,30 +18,30 @@ const pgnative = require('pg').native; //.native, // native provides ssl (needed
 const parsePgConnectionString = require('pg-connection-string').parse;
 
 const usingReplica = process.env.DATABASE_URL !== process.env[process.env.DATABASE_FOR_READS_NAME];
-const poolSize = Config.isDevMode() ? 2 : (usingReplica ? 3 : 12)
+const poolSize = Config.isDevMode() ? 2 : (usingReplica ? 3 : 12);
 
 // not sure how many of these config options we really need anymore
 const pgConnection = Object.assign(parsePgConnectionString(process.env.DATABASE_URL),
   {max: poolSize,
     isReadOnly: false,
-   poolLog: function(str, level) {
-     if (pgPoolLevelRanks.indexOf(level) <= pgPoolLoggingLevel) {
-       console.log("pool.primary." + level + " " + str);
-     }
-   }})
+    poolLog: function(str, level) {
+      if (pgPoolLevelRanks.indexOf(level) <= pgPoolLoggingLevel) {
+        console.log("pool.primary." + level + " " + str);
+      }
+    }});
 const readsPgConnection = Object.assign(parsePgConnectionString(process.env[process.env.DATABASE_FOR_READS_NAME]),
   {max: poolSize,
-   isReadOnly: true,
-   poolLog: function(str, level) {
-     if (pgPoolLevelRanks.indexOf(level) <= pgPoolLoggingLevel) {
-       console.log("pool.replica." + level + " " + str);
-     }
-   }})
+    isReadOnly: true,
+    poolLog: function(str, level) {
+      if (pgPoolLevelRanks.indexOf(level) <= pgPoolLoggingLevel) {
+        console.log("pool.replica." + level + " " + str);
+      }
+    }});
 
 // split requests into centralized read/write transactor pool vs read pool for scalability concerns in keeping
 // pressure down on the transactor (read+write) server
-const readWritePool = new pgnative.Pool(pgConnection)
-const readPool = new pgnative.Pool(readsPgConnection)
+const readWritePool = new pgnative.Pool(pgConnection);
+const readPool = new pgnative.Pool(readsPgConnection);
 
 // Same syntax as pg.client.query, but uses connection pool
 // Also takes care of calling 'done'.
@@ -55,7 +55,7 @@ function queryImpl(pool, queryString, ...args) {
     params = [];
     callback = args[0];
   } else {
-    throw "unexpected db query syntax";
+    throw "missing callback function in pg-query";
   }
 
   // Not sure whether we have to be this careful in calling release for these query results. There may or may
@@ -82,11 +82,9 @@ function queryImpl(pool, queryString, ...args) {
   });
 }
 
+
 const pgPoolLevelRanks = ["info", "verbose"]; // TODO investigate
 const pgPoolLoggingLevel = -1; // -1 to get anything more important than info and verbose. // pgPoolLevelRanks.indexOf("info");
-
-// remove queryreadwriteobj
-// remove queryreadonlyobj
 
 function query(...args) {
   return queryImpl(readWritePool, ...args);
@@ -133,10 +131,12 @@ function queryP_readOnly_wRetryIfEmpty(...args) {
   }); // NOTE: this does not retry in case of errors. Not sure what's best in that case.
 }
 
+
+
 function queryP_metered_impl(isReadOnly, name, queryString, params) {
   let f = isReadOnly ? queryP_readOnly : queryP;
   if (_.isUndefined(name) || _.isUndefined(queryString) || _.isUndefined(params)) {
-    throw new Error("polis_err_queryP_metered_impl missing params");
+    throw new Error("polis_err_pgQueryP_metered_impl missing params");
   }
   return new MPromise(name, function(resolve, reject) {
     f(queryString, params).then(resolve, reject);

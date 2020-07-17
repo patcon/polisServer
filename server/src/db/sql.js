@@ -1,5 +1,6 @@
 const sql = require("sql"); // see here for useful syntax: https://github.com/brianc/node-sql/blob/bbd6ed15a02d4ab8fbc5058ee2aff1ad67acd5dc/lib/node/valueExpression.js
 
+//first we define our tables
 const sql_conversations = sql.define({
   name: 'conversations',
   columns: [
@@ -43,17 +44,6 @@ const sql_conversations = sql.define({
     "auth_opt_allow_3rdparty",
   ],
 });
-
-// const sql_votes = sql.define({
-//   name: 'votes',
-//   columns: [
-//     "zid",
-//     "tid",
-//     "pid",
-//     "created",
-//     "vote",
-//   ],
-// });
 
 const sql_comments = sql.define({
   name: 'comments',
