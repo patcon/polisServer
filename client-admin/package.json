@@ -42,7 +42,7 @@
     "eslint-config-defaults": "^7.0.1",
     "eslint-plugin-filenames": "^0.1.2",
     "eslint-plugin-react": "^3.5.1",
-    "express": "^4.13.3",
+    "express": "^4.17.1",
     "file-loader": "https://registry.npmjs.org/file-loader/-/file-loader-0.8.5.tgz",
     "glob": "^7.1.2",
     "gulp": "^3.9.0",
