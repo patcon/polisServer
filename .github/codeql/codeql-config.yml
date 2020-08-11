@@ -1,0 +1,17 @@
+name: "CodeQL: Javascript "
+
+disable-default-queries: false
+
+queries:
+  # See: https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#running-additional-queries
+  # See: https://github.com/github/codeql/tree/master/javascript/ql/src/codeql-suites
+  - name: Queries of lower severity and precision than the default queries
+    uses: security-extended
+  - name: Queries from security-extended, plus maintainability and reliability queries
+    uses: security-and-quality
+
+paths-ignore:
+  - '**/node_modules'
+  - '**/*.test.js'
+paths:
+  - 'client-admin/src'
