@@ -9,6 +9,10 @@ module.exports = {
   "agree": "Enig",
   "disagree": "Uenig",
   "pass": "Spring over / Usikker",
+
+  "importantCheckbox": "Denne kommentar er vigtig",
+
+  "modSpam": "Spam",
   "modOffTopic": "Off topic",
   "modImportant": "Vigtigt",
   "modSubmitInitialState": "Spring over (ingen af ovenstående), næste kommentar",
