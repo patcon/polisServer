@@ -84,4 +84,8 @@ const HullLabels = ({groups, centroids, selectedGroup, handleClick}) => {
   )
 }
 
-export default HullLabels
+export {
+  Users,
+  Label,
+  HullLabels
+}

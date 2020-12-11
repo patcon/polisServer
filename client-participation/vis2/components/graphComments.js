@@ -121,4 +121,7 @@ class GraphComments extends React.Component {
   //     cy={yy(0*yScaleup)}/>
 
 
-export default GraphComments;
+export {
+  GraphComment,
+  GraphComments
+}
