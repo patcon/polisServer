@@ -12,14 +12,16 @@ module.exports = {
     publicPath: "SET_THIS_FROM_GULP"
   },
   module: {
-
-    preLoaders: [
-      { test: /\.json$/, loader: "json"}
-    ],
-    loaders: [{
-      test: /\.js$/,
-      loaders: ["babel"],
-      include: path.join(__dirname, "vis2")
-    }]
+    rules: [
+      {
+        test: /\.js$/,
+        loaders: ["babel-loader"],
+        include: path.join(__dirname, "vis2")
+      },
+      {
+        test: /\.json$/,
+        loader: "json-loader"
+      }
+    ]
   }
 };

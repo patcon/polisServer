@@ -16,17 +16,15 @@ module.exports = {
     // new webpack.HotModuleReplacementPlugin(),
     // perf test on nodes - remove this line to get warnings back.
     new webpack.DefinePlugin({
-      "process.env": {
-        NODE_ENV: JSON.stringify("dev")
-      }
+      "process.env.NODE_ENV": JSON.stringify("dev"),
     })
     // new webpack.NoErrorsPlugin()
   ],
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
-        loaders: ["babel"],
+        loaders: ["babel-loader"],
         include: path.join(__dirname, "vis2")
       },
       {

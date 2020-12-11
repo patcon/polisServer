@@ -299,7 +299,7 @@ gulp.task('templates', function(){
             // new Buffer(
             //   needsHeaderAndFooter(file) ? '<div class="wrap">' : ''
             // ),
-            new Buffer(
+            new Buffer.from(
               (needsHeaderAndFooter(file) ? '{{#ifNotEmbedded}}{{> header}}{{/ifNotEmbedded}}' : '') +
               (needsBanner(file) ? '{{#ifTrial}}{{> banner}}{{/ifTrial}}' : '')
             ),

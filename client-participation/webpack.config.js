@@ -13,23 +13,23 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      "process.env": {
-        "NODE_ENV": JSON.stringify("production")
-      }
+      "process.env.NODE_ENV": JSON.stringify("production"),
     })
   ],
   optimization: {
     minimize: true
   },
   module: {
-
-    preLoaders: [
-      { test: /\.json$/, loader: "json"}
-    ],
-    loaders: [{
-      test: /\.js$/,
-      loaders: ["babel"],
-      include: path.join(__dirname, "vis2")
-    }]
+    rules: [
+      {
+        test: /\.js$/,
+        loaders: ["babel-loader"],
+        include: path.join(__dirname, "vis2")
+      },
+      {
+        test: /\.json$/,
+        loader: "json-loader"
+      }
+    ]
   }
 };
