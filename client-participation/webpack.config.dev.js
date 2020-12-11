@@ -2,7 +2,7 @@ var path = require("path");
 var webpack = require("webpack");
 
 module.exports = {
-  devtool: ["eval", "sourcemap"],
+  devtool: "eval-source-map",
   entry: [
     // 'webpack-hot-middleware/client',
     "./vis2/vis2"
