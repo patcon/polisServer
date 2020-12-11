@@ -12,18 +12,15 @@ module.exports = {
     publicPath: "SET_THIS_FROM_GULP"
   },
   plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.DefinePlugin({
       "process.env": {
         "NODE_ENV": JSON.stringify("production")
       }
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-      compressor: {
-        warnings: false
-      }
     })
   ],
+  optimization: {
+    minimize: true
+  },
   module: {
 
     preLoaders: [

@@ -11,9 +11,6 @@ module.exports = {
     filename: "vis_bundle.js",
     publicPath: "SET_THIS_FROM_GULP"
   },
-  plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
-  ],
   module: {
 
     preLoaders: [
