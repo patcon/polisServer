@@ -90,7 +90,10 @@ class Curate extends React.Component {
 }
 
 
-export default Curate;
+export {
+  Button,
+  Curate
+}
 
 
 // <div style={{marginRight: 20}}>
