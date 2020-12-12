@@ -63,5 +63,5 @@ TensOfThousandsOfMembers.args = {
 export const RepeatedDigit = Template.bind({})
 RepeatedDigit.args = {
   ...Selected.args,
-  ptptCount: 11111
+  ptptCount: 99999
 }
