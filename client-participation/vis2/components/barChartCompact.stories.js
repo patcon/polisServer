@@ -10,7 +10,7 @@ export default {
   component: BarChartCompact,
   decorators: [
     (Story) => (
-      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="200" heigh="100">
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="200" height="100">
         <Story />
       </svg>
     )
