@@ -13,7 +13,7 @@ export const Default = Template.bind({})
 Default.args = {
   conversation_id: '123456',
   is_owner: false,
-  is_embeded: false,
+  is_embedded: false,
 }
 
 export const IsEmbedded = Template.bind({})
