@@ -1,5 +1,6 @@
 import _ from "lodash";
 import React from "react";
+import PropTypes from "prop-types";
 import * as globals from "./globals";
 
 class Button extends React.Component {
@@ -87,6 +88,12 @@ class Curate extends React.Component {
       </div>
     )
   }
+}
+Curate.propTypes = {
+  selectedTidCuration: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number
+  ])
 }
 
 
