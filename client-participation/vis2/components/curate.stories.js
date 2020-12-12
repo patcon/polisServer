@@ -1,6 +1,5 @@
 import React from 'react'
 import { action } from '@storybook/addon-actions'
-import map from 'lodash/map'
 
 import * as globals from './globals'
 import { Curate } from './curate'
