@@ -109,7 +109,7 @@ class TidCarousel extends React.Component {
         marginTop: 10,
         marginLeft: 20,
         }}>
-        {this.props.commentsToShow < this.state.page ? this.renderUpperPaginationButtons() : null}
+        {this.state.page > 0 ? this.renderUpperPaginationButtons() : null}
         <div style={{
             display: "flex",
             width: "100%",
@@ -151,7 +151,7 @@ class TidCarousel extends React.Component {
             )
           }
         </div>
-        {this.props.commentsToShow < this.state.page ? this.renderLowerPaginationButtons() : null}
+        {this.props.commentsToShow.length > (this.state.page+1) * this.state.perPage ? this.renderLowerPaginationButtons() : null}
       </div>
     )
   }
