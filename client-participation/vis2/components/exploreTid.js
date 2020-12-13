@@ -255,7 +255,10 @@ class ExploreTid extends React.Component {
   }
 }
 
-export default ExploreTid;
+export {
+  DataSentence,
+  ExploreTid
+}
 
 
 //
