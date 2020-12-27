@@ -4,7 +4,7 @@ import * as globals from "./globals";
 
 /* https://bl.ocks.org/mbostock/2206590 */
 
-class GraphComment extends React.Component {
+export class GraphComment extends React.Component {
   getRectX() {
     let x = -7;
 
@@ -121,7 +121,4 @@ class GraphComments extends React.Component {
   //     cy={yy(0*yScaleup)}/>
 
 
-export {
-  GraphComment,
-  GraphComments
-}
+export default GraphComments;

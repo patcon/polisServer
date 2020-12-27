@@ -3,7 +3,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import * as globals from "./globals";
 
-class Button extends React.Component {
+export class Button extends React.Component {
 
   handleClick() {
     this.props.handleCurateButtonClick(this.props.identifier)
@@ -97,10 +97,7 @@ Curate.propTypes = {
 }
 
 
-export {
-  Button,
-  Curate
-}
+export default Curate;
 
 
 // <div style={{marginRight: 20}}>

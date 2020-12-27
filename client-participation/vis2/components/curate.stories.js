@@ -2,7 +2,7 @@ import React from 'react'
 import { action } from '@storybook/addon-actions'
 
 import * as globals from './globals'
-import { Curate } from './curate'
+import Curate from './curate'
 
 import participationData from '../../.storybook/data/3ntrtcehas-participation-init.json'
 const pcaData = JSON.parse(participationData.pca)
