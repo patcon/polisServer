@@ -1,29 +1,30 @@
 import React from 'react'
 
-import BarChartCompact from '../vis2/components/barChartCompact'
+import BarChart from '../vis2/components/barChart'
 
 import participationData from '../.storybook/data/3ntrtcehas-participation-init.json'
 const pcaData = JSON.parse(participationData.pca)
 
 export default {
-  title: 'Visualization/BarChartCompact',
-  component: BarChartCompact,
+  title: 'Visualization/BarChart',
+  component: BarChart,
   decorators: [
     (Story) => (
-      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="200" height="100">
+      <svg xmlns="http://www.w3.org/2000/svg" version="1.1" width="300" height="100">
         <Story />
       </svg>
     )
   ]
 }
 
-const Template = (args) => <BarChartCompact {...args} />
+const Template = (args) => <BarChart {...args} />
 
 export const Default = Template.bind({})
 Default.args = {
   selectedComment: { tid: 4 },
   groupVotes: pcaData['group-votes'][0],
-  translate: [20, 50]
+  translate: [0, 0],
+  groups: []
 }
 
 export const SomeOtherComment = Template.bind({})
@@ -38,10 +39,11 @@ SomeOtherGroup.args = {
   groupVotes: pcaData['group-votes'][2]
 }
 
-export const NewPosition = Template.bind({})
-NewPosition.args = {
+export const GlobalAggregate = Template.bind({})
+GlobalAggregate.args = {
   ...Default.args,
-  translate: [40, 70]
+  groupVotes: null,
+  groups: pcaData['group-votes']
 }
 
 export const NoSelectedComment = Template.bind({})
