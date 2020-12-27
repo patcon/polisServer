@@ -2,7 +2,7 @@ import React from "react";
 import * as globals from "./globals";
 import {VictoryAnimation} from "victory";
 
-class Hull extends React.Component {
+export class Hull extends React.Component {
   render () {
     return (
       <g>
