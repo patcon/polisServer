@@ -1,5 +1,6 @@
 import _ from "lodash";
 import React from "react";
+import PropTypes from "prop-types";
 import * as globals from "./globals";
 import BarChart from "./barChart";
 
@@ -253,6 +254,30 @@ class ExploreTid extends React.Component {
       </div>
     )
   }
+}
+ExploreTid.propTypes = {
+  /** (Inactive codepath.) */
+  onVoteClicked: PropTypes.func,
+  /** (Inactive codepath.) */
+  handleReturnToVoteClicked: PropTypes.func,
+  /** Active comment object. `DataSentence` will be generated from associated data in `math` prop. */
+  selectedComment: PropTypes.shape({
+    tid: PropTypes.number,
+    text: PropTypes.string,
+  }).isRequired,
+  /** Width of browser or iframe. Breakpoint behavior at 768 px. */
+  browserDimensions: PropTypes.number,
+  /** Translation strings for active locale. */
+  Strings: PropTypes.object.isRequired,
+  /** Complex data object built by math worker. */
+  math: PropTypes.object.isRequired,
+  /** Group `tid` in which `selectedComment` exists. */
+  selectedTidCuration: PropTypes.oneOf([0,1,2,3,4,5,6,7,8,9]).isRequired,
+  /** (Inactive codepath.) */
+  comments: PropTypes.array,
+  /** (Inactive codepath.) */
+  votesByMe: PropTypes.array
+
 }
 
 export {
