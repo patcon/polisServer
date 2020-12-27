@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Header from './header'
+import Header from '../vis2/components/header'
 
 export default {
   title: 'Visualization/Header',

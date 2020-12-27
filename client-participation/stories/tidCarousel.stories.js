@@ -1,10 +1,10 @@
 import React from 'react'
 import { action } from '@storybook/addon-actions'
 
-import * as globals from './globals'
-import TidCarousel from './tidCarousel'
+import * as globals from '../vis2/components/globals'
+import TidCarousel from '../vis2/components/tidCarousel'
 
-import commentsData from '../../.storybook/data/3ntrtcehas-comments.json'
+import commentsData from '../.storybook/data/3ntrtcehas-comments.json'
 
 const pluckNBetweenLowerUpper = (n, lower, upper) => {
   let numbers = []

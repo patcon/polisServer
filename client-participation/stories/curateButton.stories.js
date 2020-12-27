@@ -1,8 +1,8 @@
 import React from 'react'
 import { action } from '@storybook/addon-actions'
 
-import * as globals from './globals'
-import { Button as CurateButton } from './curate'
+import * as globals from '../vis2/components/globals'
+import { Button as CurateButton } from '../vis2/components/curate'
 
 export default {
   title: 'Visualization/CurateButton',

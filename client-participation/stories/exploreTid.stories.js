@@ -1,9 +1,9 @@
 import React from 'react'
 import { action } from '@storybook/addon-actions'
 
-import ExploreTid from './exploreTid'
+import ExploreTid from '../vis2/components/exploreTid'
 
-import participationData from '../../.storybook/data/3ntrtcehas-participation-init.json'
+import participationData from '../.storybook/data/3ntrtcehas-participation-init.json'
 const pcaData = JSON.parse(participationData.pca)
 
 export default {

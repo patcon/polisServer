@@ -1,8 +1,8 @@
 import React from 'react'
-import { action, actions } from '@storybook/addon-actions'
+import { action } from '@storybook/addon-actions'
 
-import * as globals from './globals'
-import { Hull } from './hull'
+import * as globals from '../vis2/components/globals'
+import { Hull } from '../vis2/components/hull'
 
 export default {
   title: 'Visualization/Hull',

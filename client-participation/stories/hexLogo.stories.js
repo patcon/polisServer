@@ -1,6 +1,6 @@
 import React from 'react'
 
-import HexLogo from './hexLogo'
+import HexLogo from '../vis2/components/hexLogo'
 
 export default {
   title: 'Visualization/HexLogo',

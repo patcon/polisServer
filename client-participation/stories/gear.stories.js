@@ -1,6 +1,6 @@
 import React from 'react'
 
-import Gear from './gear'
+import Gear from '../vis2/components/gear'
 
 export default {
   title: 'Visualization/Gear',

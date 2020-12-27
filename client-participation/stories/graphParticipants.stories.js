@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { Participant as GraphParticipant } from './graphParticipants'
+import { Participant as GraphParticipant } from '../vis2/components/graphParticipants'
 
-import socialAvatar from '../../.storybook/assets/avatar-sample.jpg'
-import defaultAvatar from '../../.storybook/assets/avatar-default.png'
+import socialAvatar from '../.storybook/assets/avatar-sample.jpg'
+import defaultAvatar from '../.storybook/assets/avatar-default.png'
 
 export default {
   title: 'Visualization/GraphParticipant',

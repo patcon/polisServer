@@ -1,8 +1,8 @@
 import React from 'react'
 
-import BarChartCompact from './barChartCompact'
+import BarChartCompact from '../vis2/components/barChartCompact'
 
-import participationData from '../../.storybook/data/3ntrtcehas-participation-init.json'
+import participationData from '../.storybook/data/3ntrtcehas-participation-init.json'
 const pcaData = JSON.parse(participationData.pca)
 
 export default {

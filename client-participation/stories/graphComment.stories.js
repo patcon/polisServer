@@ -1,7 +1,7 @@
 import React from 'react'
 import { action } from '@storybook/addon-actions'
 
-import { GraphComment } from './graphComments'
+import { GraphComment } from '../vis2/components/graphComments'
 
 export default {
   title: 'Visualization/GraphComment',

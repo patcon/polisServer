@@ -1,7 +1,7 @@
 import React from 'react'
 import { action } from '@storybook/addon-actions'
 
-import { Label as HullLabel } from './hullLabels'
+import { Label as HullLabel } from '../vis2/components/hullLabels'
 
 export default {
   title: 'Visualization/HullLabel',

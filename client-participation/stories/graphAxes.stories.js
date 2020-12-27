@@ -1,7 +1,7 @@
 import React from 'react'
 
-import * as globals from './globals'
-import GraphAxes from './graphAxes'
+import * as globals from '../vis2/components/globals'
+import GraphAxes from '../vis2/components/graphAxes'
 
 export default {
   title: 'Visualization/GraphAxes',

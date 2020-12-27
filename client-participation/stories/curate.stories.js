@@ -1,10 +1,10 @@
 import React from 'react'
 import { action } from '@storybook/addon-actions'
 
-import * as globals from './globals'
-import Curate from './curate'
+import * as globals from '../vis2/components/globals'
+import Curate from '../vis2/components/curate'
 
-import participationData from '../../.storybook/data/3ntrtcehas-participation-init.json'
+import participationData from '../.storybook/data/3ntrtcehas-participation-init.json'
 const pcaData = JSON.parse(participationData.pca)
 
 export default {
