@@ -264,7 +264,7 @@ ExploreTid.propTypes = {
   selectedComment: PropTypes.shape({
     tid: PropTypes.number,
     text: PropTypes.string,
-  }).isRequired,
+  }),
   /** Width of browser or iframe. Breakpoint behavior at 768 px. */
   browserDimensions: PropTypes.number,
   /** Translation strings for active locale. */
@@ -272,7 +272,7 @@ ExploreTid.propTypes = {
   /** Complex data object built by math worker. */
   math: PropTypes.object.isRequired,
   /** Group `tid` in which `selectedComment` exists. */
-  selectedTidCuration: PropTypes.oneOf([0,1,2,3,4,5,6,7,8,9]).isRequired,
+  selectedTidCuration: PropTypes.oneOf([0,1,2,3,4,5,6,7,8,9,'majority']),
   /** (Inactive codepath.) */
   comments: PropTypes.array,
   /** (Inactive codepath.) */
