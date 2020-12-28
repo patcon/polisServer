@@ -23,7 +23,7 @@ export const Default = Template.bind({})
 Default.args = {
   selectedComment: { tid: 4 },
   groupVotes: pcaData['group-votes'][0],
-  translate: [0, 0],
+  translate: 'translate(0,0)',
   groups: []
 }
 
@@ -44,6 +44,12 @@ GlobalAggregate.args = {
   ...Default.args,
   groupVotes: null,
   groups: pcaData['group-votes']
+}
+
+export const NewPosition = Template.bind({})
+NewPosition.args = {
+  ...Default.args,
+  translate: 'translate(25,25)'
 }
 
 export const NoSelectedComment = Template.bind({})
