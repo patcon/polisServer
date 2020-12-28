@@ -241,7 +241,7 @@ class Graph extends React.Component {
           math={this.props.math || window.preload.firstMath}
           onVoteClicked={this.props.onVoteClicked}
           Strings={this.props.Strings}
-          comments={this.props.comment}/>
+          comments={this.props.comments}/>
       </div>
     );
   }
