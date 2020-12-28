@@ -1,4 +1,5 @@
 import React from "react";
+import { line as d3Line }  from 'd3-shape'
 import * as globals from "./globals";
 import {VictoryAnimation} from "victory";
 
@@ -19,7 +20,7 @@ export class Hull extends React.Component {
 
 class Hulls extends React.Component {
   render () {
-    const line = d3.line(); // .curve(d3.curveBasis);
+    const line = d3Line(); // .curve(d3.curveBasis);
     return (
       <g>
         {
