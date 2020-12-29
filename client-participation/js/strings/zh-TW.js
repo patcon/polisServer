@@ -10,6 +10,8 @@ module.exports = {
   "disagree": "反對",
   "pass": "略過 / 不確定",
 
+  "importantCheckbox": "blah blah",
+
   "x_wrote": "表示：",
   "x_tweeted": "推文：",
   "group_123": "群組：",

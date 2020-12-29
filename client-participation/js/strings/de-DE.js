@@ -107,4 +107,6 @@ module.exports = {
   "noCommentsTryWritingOne": "Wenn Sie noch etwas hinzufügen möchten, erstellen Sie einfach ein eigenes Statement.",
   "convIsClosed": "Diese Diskussion ist bereits geschlossen.",
   "noMoreVotingAllowed": "Abstimmungen sind nicht mehr möglich.",
+
+  "demo": "Dies ist eine Demo-Zeichenfolge!"
 };
