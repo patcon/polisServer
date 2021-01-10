@@ -7,6 +7,8 @@ var capabilities = {
   'browserName': 'chrome',
   'browser_version' : 'latest',
   'browserstack.local': 'true',
+  // Allow using self-signed SSL cert.
+  'acceptSslCerts': 'true',
   'build': process.env.BROWSERSTACK_BUILD_NAME,
   'project': process.env.BROWSERSTACK_PROJECT_NAME,
   'browserstack.localIdentifier': process.env.BROWSERSTACK_LOCAL_IDENTIFIER,
