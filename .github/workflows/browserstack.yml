@@ -39,7 +39,9 @@ jobs:
 
       - name: Run Selenium tests
         working-directory: e2e
-        run: node selenium/run.js
+        run: |
+          npm install
+          node selenium/run.js
 
       - name: 'BrowserStackLocal Stop'
         uses: 'browserstack/github-actions/setup-local@master'
