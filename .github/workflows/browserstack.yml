@@ -1,0 +1,47 @@
+name: 'BrowserStack Test'
+on: [push, pull_request]
+
+jobs:
+  ubuntu-job:
+    name: 'BrowserStack Test on Ubuntu'
+    runs-on: ubuntu-latest
+    env:
+      # Use native docker command within docker-compose
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      # Use buildkit to speed up docker command
+      DOCKER_BUILDKIT: 1
+    steps:
+      # This ensures only the most recently push commit will keep running.
+      - name: Cancel other active runs of this workflow
+        uses: rokroskar/workflow-run-cleanup-action@v0.3.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'BrowserStack Env Setup'
+        uses: 'browserstack/github-actions/setup-env@v1.0.1'
+        with:
+          username:  ${{ secrets.BROWSERSTACK_USERNAME }}
+          access-key: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          build-name: BUILD_INFO
+          project-name: REPO_NAME
+
+      - name: 'BrowserStackLocal Setup'
+        uses: 'browserstack/github-actions/setup-local@v1.0.1'
+        with:
+          local-testing: start
+          local-identifier: random
+
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+
+      - name: Serve app via docker-compose
+        run: docker-compose up --detach
+
+      - name: Run Selenium tests
+        working-directory: e2e
+        run: node selenium/run.js
+
+      - name: 'BrowserStackLocal Stop'
+        uses: 'browserstack/github-actions/setup-local@master'
+        with:
+          local-testing: stop
