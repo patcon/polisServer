@@ -1,0 +1,26 @@
+version: "3.1"
+
+services:
+  server:
+    image: ghcr.io/patcon/server:latest
+
+  math:
+    image: ghcr.io/patcon/math:latest
+
+  postgres:
+    image: ghcr.io/patcon/postgres:latest
+
+  nginx-proxy:
+    image: ghcr.io/patcon/nginx-proxy:latest
+
+  file-server:
+    image: ghcr.io/patcon/file-server:latest
+
+  client-participation:
+    image: ghcr.io/patcon/client-participation:latest
+
+  client-admin:
+    image: ghcr.io/patcon/client-admin:latest
+
+  client-report:
+    image: ghcr.io/patcon/client-report:latest
