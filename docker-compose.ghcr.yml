@@ -2,25 +2,25 @@ version: "3.1"
 
 services:
   server:
-    image: ghcr.io/patcon/server:latest
+    image: ghcr.io/$GITHUB_OWNER/server:latest
 
   math:
-    image: ghcr.io/patcon/math:latest
+    image: ghcr.io/$GITHUB_OWNER/math:latest
 
   postgres:
-    image: ghcr.io/patcon/postgres:latest
+    image: ghcr.io/$GITHUB_OWNER/postgres:latest
 
   nginx-proxy:
-    image: ghcr.io/patcon/nginx-proxy:latest
+    image: ghcr.io/$GITHUB_OWNER/nginx-proxy:latest
 
   file-server:
-    image: ghcr.io/patcon/file-server:latest
+    image: ghcr.io/$GITHUB_OWNER/file-server:latest
 
   client-participation:
-    image: ghcr.io/patcon/client-participation:latest
+    image: ghcr.io/$GITHUB_OWNER/client-participation:latest
 
   client-admin:
-    image: ghcr.io/patcon/client-admin:latest
+    image: ghcr.io/$GITHUB_OWNER/client-admin:latest
 
   client-report:
-    image: ghcr.io/patcon/client-report:latest
+    image: ghcr.io/$GITHUB_OWNER/client-report:latest
