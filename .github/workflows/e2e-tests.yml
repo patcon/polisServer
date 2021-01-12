@@ -37,7 +37,7 @@ jobs:
         run: |
           cp docker-compose.ghcr.yml docker-compose.override.yml
           echo GITHUB_OWNER=${{ github.event.repository.owner.login }} >> .env
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login --password-stdin --username ${{ github.event.repository.owner.login }} ghcr.io
+          echo ${{ secrets.GHCR_PERSONAL_ACCESS_TOKEN }} | docker login --password-stdin --username ${{ github.event.repository.owner.login }} ghcr.io
 
       # This step helps us know when to skip future steps, particularly if
       # we're on a fork where upstream secrets won't be available.
@@ -82,7 +82,7 @@ jobs:
         run: |
           cp docker-compose.ghcr.yml docker-compose.override.yml
           echo GITHUB_OWNER=${{ github.event.repository.owner.login }} >> .env
-          docker login --username ${{ github.event.repository.owner.login }} --password ${{ secrets.GITHUB_TOKEN }}  ghcr.io
+          echo ${{ secrets.GHCR_PERSONAL_ACCESS_TOKEN }} | docker login --password-stdin --username ${{ github.event.repository.owner.login }} ghcr.io
 
       # This step helps us know when to skip future steps, particularly if
       # we're on a fork where upstream secrets won't be available.
