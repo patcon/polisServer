@@ -39,4 +39,4 @@ To run these tests:
 - For tests against features that require third-party credentials when self-hosted, we use filenames like `*.secrets.spec.js`.
   - This allows someone to easily exclude them from test runs.
 - These tests are run automatically on pull requests and mainline branch.
-  - We use a GitHub Actions workflow, configured via [`.github/workflows/cypress-tests.yml`](/.github/workflows/cypress-tests.yml).
+  - We use a GitHub Actions workflow, configured via [`.github/workflows/e2e-tests.yml`](/.github/workflows/e2e-tests.yml).
