@@ -2,25 +2,25 @@ version: "3.1"
 
 services:
   server:
-    image: ghcr.io/$GITHUB_OWNER/server:latest
+    image: ghcr.io/$GITHUB_OWNER/polis-server:latest
 
   math:
-    image: ghcr.io/$GITHUB_OWNER/math:latest
+    image: ghcr.io/$GITHUB_OWNER/polis-math:latest
 
   postgres:
-    image: ghcr.io/$GITHUB_OWNER/postgres:latest
+    image: ghcr.io/$GITHUB_OWNER/polis-postgres:latest
 
   nginx-proxy:
-    image: ghcr.io/$GITHUB_OWNER/nginx-proxy:latest
+    image: ghcr.io/$GITHUB_OWNER/polis-nginx-proxy:latest
 
   file-server:
-    image: ghcr.io/$GITHUB_OWNER/file-server:latest
+    image: ghcr.io/$GITHUB_OWNER/polis-file-server:latest
 
   client-participation:
-    image: ghcr.io/$GITHUB_OWNER/client-participation:latest
+    image: ghcr.io/$GITHUB_OWNER/polis-client-participation:latest
 
   client-admin:
-    image: ghcr.io/$GITHUB_OWNER/client-admin:latest
+    image: ghcr.io/$GITHUB_OWNER/polis-client-admin:latest
 
   client-report:
-    image: ghcr.io/$GITHUB_OWNER/client-report:latest
+    image: ghcr.io/$GITHUB_OWNER/polis-client-report:latest
