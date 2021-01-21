@@ -124,3 +124,26 @@ Cypress.Commands.overwrite(
     else { return originalFn(url, options); }
   }
 );
+
+Cypress.Commands.add("moveConvo", (convoIdOld, convoIdNew) => {
+  cy.task('dbQuery', {
+    // insert new link for convoIdNew, but if it already exists, swap internal
+    // convo zid for this one.
+    sql: `
+      INSERT INTO zinvites (zid, zinvite)
+        VALUES (
+          (
+            SELECT zid FROM zinvites
+              WHERE zinvite = $2
+          ),
+          $1
+        )
+        ON CONFLICT (zinvite)
+          DO UPDATE SET zid = EXCLUDED.zid
+    `,
+    values: [
+      convoIdNew,
+      convoIdOld,
+    ],
+  })
+})

@@ -15,8 +15,21 @@
 /**
  * @type {Cypress.PluginConfig}
  */
+
+const { Pool, Client } = require('pg')
+
+// pools will use environment variables
+// for connection information: DATABASE_URL
+const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
   require('cypress-terminal-report/src/installLogsPrinter')(on)
+
+  on('task', {
+    async dbQuery ({ sql, values }) {
+      return await pool.query(sql, values)
+    }
+  })
 }
