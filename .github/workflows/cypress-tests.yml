@@ -7,10 +7,12 @@ on:
       - dev
     paths-ignore:
       - "**.md"
+      - "!*/src/**.md"
 
   pull_request:
     paths-ignore:
       - "**.md"
+      - "!**/src/**.md"
 
 jobs:
   cypress-run:
